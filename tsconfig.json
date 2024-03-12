@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "target": "ES2015", 
+    "module": "commonjs",
+    "sourceMap": true,
+    "outDir": "dist",
+    "strict": true,
+    "lib": ["esnext", "es2016", "dom"],
+    "esModuleInterop": true
+  }
+}
