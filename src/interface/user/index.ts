@@ -1,4 +1,3 @@
-import { IHaccp, IRoles, IRoster } from "../company";
 
 export type IUserStatus = "Working" | "Application" | "Filled";
 
@@ -49,12 +48,12 @@ export interface IUser {
   // refresh_token?: IRefreshToken;
   // token?: ITokens[];
   // requests?: IRequests[];
-  roster?: IRoster[];
+  // roster?: IRoster[];
   documents?: IUserDocuments[];
-  haccp?: IHaccp[];
+  // haccp?: IHaccp[];
 
   role_id?: string;
-  role?: IRoles;
+  // role?: IRoles;
 }
 
 export interface IAvailableDays {

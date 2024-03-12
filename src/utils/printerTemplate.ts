@@ -1,4 +1,4 @@
-import { IOrderController, ITable } from "../interface/restaurant/orders";
+import { IOrder, IOrderController, ITable } from "../interface/restaurant/orders";
 
 const menuTypeLabels: { [key: string]: string } = {
   Starters: "=== Starters ===",
@@ -71,7 +71,7 @@ function centerTextIn28Chars(text: string) {
 }
 
 //option 1
-const printerTemplate = (orderController: IOrderController, table: ITable) => {
+const printerTemplate = (orders: IOrder[], table: ITable, orderControllerNumber: number) => {
   const fontBoldTitle = "\x1B\x21\x31";
   const fontBigTitle = "\x1B\x21\x38";
   const fontSmall = "\x1B\x21\x26";
@@ -79,15 +79,15 @@ const printerTemplate = (orderController: IOrderController, table: ITable) => {
   const print = [
     `
 ${fontBoldTitle}
-Table: ${table?.number} - ${orderController?.number}
+Table: ${table?.number} - ${orderControllerNumber}
 
 ${centerTextIn28Chars(`PASS ${table?.pass}`)}
 `,
   ];
 
   for (const menuType of menuTypes) {
-    const ordersByType = orderController?.orders?.filter(
-      (o) => o.menu_type === menuType.type
+    const ordersByType = orders?.filter(
+      (o) => o.mn_type === menuType.type
     );
 
     if (ordersByType && ordersByType.length) {
@@ -100,13 +100,12 @@ ${centerTextIn28Chars(`PASS ${table?.pass}`)}
         print.push(`\n`);
         print.push(`${fontBigTitle}`);
         print.push(`${order.quantity}  ${order.menu}`);
-        if (order.description) {
+        if (order?.add_ons) {
           // Set a small font size for the description
           print.push(`\n`);
           print.push(`${fontSmall}`);
           print.push(
-            order.description
-              .split("/")
+            order.add_ons
               .map((x) => ` >>${x}`)
               .join("\n")
           );

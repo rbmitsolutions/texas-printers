@@ -42,15 +42,19 @@ export interface IOrder {
 
   status: IOrderStatus;
   quantity: number;
+  paid: number;
 
-  type: IType
-  menu_type: IMenuType
+  mn_type: IMenuType;
 
   price: number;
-  description: string;
-
+  
   menu: string;
   menu_id: string;
+  menu_short_title: string
+  
+  add_ons: IAddOnsCreateOrder[]
+
+  to_print_ips: string[];
 
   order_controller: IOrderController;
   order_controller_id: string;
@@ -61,25 +65,65 @@ export interface IOrder {
 
 export interface IOrderController {
   id: string;
-
   number: number
-
+  
   waiter: string;
   waiter_id: string;
 
   client_id: string;
 
-  // table: ITable | null;
+  table: ITable | null;
   table_id: string | null;
 
   // finished_table: IFinishedTable | null;
-  finished_table_id: string | null;
+  // finished_table_id: string | null;
 
   orders: IOrder[];
 
   created_at: Date;
   updated_at: Date;
 }
+
+export interface IAddOnsCreateOrder {
+  add_ons_id: string
+  add_ons_opt_id: string
+  title: string
+  price: number
+  is_mandatory: boolean
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export interface IExtraSide {
   title: string;
