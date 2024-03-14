@@ -3,63 +3,61 @@ import { IOrder, IOrderController, ITable } from "../interface/restaurant/orders
 const menuTypeLabels: { [key: string]: string } = {
   Starters: "=== Starters ===",
   "Main Course": "=== Main Course ===",
-  "Kids Menu": "=== Kids Menu ===",
-  Desserts: "=== Desserts ===",
-  Sides: "=== Extra Sides ===",
   Bar: "=== Bar ===",
+  Sides: "=== Extra Sides ===",
+  Desserts: "=== Desserts ===",
 };
 
 const menuTypes = [
   { type: "Starters", label: "=== Starters ===" },
   { type: "Main Course", label: "=== Main Course ====" },
-  { type: "Kids Menu", label: "=== Kids Menu ===" },
-  { type: "Desserts", label: "=== Desserts ===" },
   { type: "Sides", label: "=== Extra Sides ===" },
   { type: "Bar", label: "=== Bar ===" },
+  { type: "Desserts", label: "=== Desserts ===" },
 ];
 
-export const TABLE_MEAL_STATUS = [
-  {
-    status: "waiting",
-    color: "orange",
-    show: ["Desserts", "Bar"],
-  },
-  {
-    status: "starters",
-    color: "purple",
-    show: ["Starters", "Extra Sides", "Sides", "Desserts", "Bar"],
-  },
-  {
-    status: "main",
-    color: "green",
-    show: [
-      "Main Course",
-      "Kids Menu",
-      "Sides",
-      "Extra Sides",
-      "Desserts",
-      "Bar",
-    ],
-  },
-  {
-    status: "all together",
-    color: "yellow",
-    show: [
-      "Starters",
-      "Main Course",
-      "Kids Menu",
-      "Sides",
-      "Extra Sides",
-      "Desserts",
-      "Bar",
-    ],
-  },
-  {
-    status: "clean table",
-    color: "orange",
-    show: [],
-  },
-];
+// export const TABLE_MEAL_STATUS = [
+//   {
+//     status: "waiting",
+//     color: "orange",
+//     show: ["Desserts", "Bar"],
+//   },
+//   {
+//     status: "starters",
+//     color: "purple",
+//     show: ["Starters", "Extra Sides", "Sides", "Desserts", "Bar"],
+//   },
+//   {
+//     status: "main",
+//     color: "green",
+//     show: [
+//       "Main Course",
+//       "Kids Menu",
+//       "Sides",
+//       "Extra Sides",
+//       "Desserts",
+//       "Bar",
+//     ],
+//   },
+//   {
+//     status: "all together",
+//     color: "yellow",
+//     show: [
+//       "Starters",
+//       "Main Course",
+//       "Kids Menu",
+//       "Sides",
+//       "Extra Sides",
+//       "Desserts",
+//       "Bar",
+//     ],
+//   },
+//   {
+//     status: "clean table",
+//     color: "orange",
+//     show: [],
+//   },
+// ];
 
 function centerTextIn28Chars(text: string) {
   const padding = 28 - text.length;
@@ -87,7 +85,7 @@ ${centerTextIn28Chars(`PASS ${table?.pass}`)}
 
   for (const menuType of menuTypes) {
     const ordersByType = orders?.filter(
-      (o) => o.mn_type === menuType.type
+      (o) => o.mn_section === menuType.type
     );
 
     if (ordersByType && ordersByType.length) {

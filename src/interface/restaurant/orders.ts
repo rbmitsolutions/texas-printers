@@ -45,6 +45,7 @@ export interface IOrder {
   paid: number;
 
   mn_type: IMenuType;
+  mn_section: string;
 
   price: number;
   
