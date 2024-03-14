@@ -22,8 +22,10 @@ export interface IOrderMessage {
 
 export interface IBillMessage {
     type: 'bill'
+    ip: string
     table: ITable
     orders: IOrder[]
+    total: number
 }
 
 export interface IToMessage {

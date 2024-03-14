@@ -59,11 +59,7 @@ ${centerTextIn28Chars(`PASS ${table?.pass}`)}
           // Set a small font size for the description
           print.push(`\n`);
           print.push(`${fontSmall}`);
-          print.push(
-            order.add_ons
-              .map((x) => ` >>${x}`)
-              .join("\n")
-          );
+          order?.add_ons?.forEach((x) => print.push(` >>${x?.title}`));
 
           // Reset to the original font size
           const fontSizeLarge = "\x1B\x21\x31";

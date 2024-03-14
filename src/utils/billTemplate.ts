@@ -1,4 +1,6 @@
+import { IBillMessage } from "../interface/message";
 import { IOrder, IOrderController, ITable } from "../interface/restaurant/orders";
+import { convertCentsToEuro } from "./convertCentsToEuro";
 
 const menuTypeLabels: { [key: string]: string } = {
   Starters: "=== Starters ===",
@@ -26,7 +28,7 @@ function centerTextIn28Chars(text: string) {
 }
 
 //option 1
-const billTemplate = (orders: IOrder[], table: ITable, orderControllerNumber: number) => {
+const billTemplate = (data: IBillMessage) => {
   const fontBoldTitle = "\x1B\x21\x31";
   const fontBigTitle = "\x1B\x21\x38";
   const fontSmall = "\x1B\x21\x26";
@@ -34,14 +36,15 @@ const billTemplate = (orders: IOrder[], table: ITable, orderControllerNumber: nu
   const print = [
     `
 ${fontBoldTitle}
-Table: ${table?.number} - ${orderControllerNumber}
+Table: ${data?.table?.number}
+Date: ${new Date().toLocaleDateString()}
 
-${centerTextIn28Chars(`PASS ${table?.pass}`)}
+${centerTextIn28Chars(`PASS ${data?.table?.pass}`)}
 `,
   ];
 
   for (const menuType of menuTypes) {
-    const ordersByType = orders?.filter(
+    const ordersByType = data?.orders?.filter(
       (o) => o.mn_section === menuType.type
     );
 
@@ -53,24 +56,22 @@ ${centerTextIn28Chars(`PASS ${table?.pass}`)}
       for (const order of ordersByType) {
         print.push(`\n`);
         print.push(`\n`);
-        print.push(`${fontBigTitle}`);
         print.push(`${order.quantity}  ${order.menu}`);
         if (order?.add_ons) {
           // Set a small font size for the description
           print.push(`\n`);
           print.push(`${fontSmall}`);
-          print.push(
-            order.add_ons
-              .map((x) => ` >>${x}`)
-              .join("\n")
-          );
-
+          order?.add_ons?.forEach((x) => print.push(` >>${x?.title} ${x.price > 0 && `+${x.price}`}`));
           // Reset to the original font size
           const fontSizeLarge = "\x1B\x21\x31";
           print.push(`${fontSizeLarge}`);
         }
       }
     }
+    print.push(`\n`);
+    print.push(`${centerTextIn28Chars('-')}`);
+    print.push(`${centerTextIn28Chars(`Total: ${data?.total}`)}`);
+
   }
 
   print.push(`
