@@ -1,6 +1,5 @@
 import { IBillMessage } from "../interface/message";
-import { IOrder, IOrderController, ITable } from "../interface/restaurant/orders";
-import { convertCentsToEuro } from "./convertCentsToEuro";
+import { formatDate } from "./convertCentsToEuro";
 
 const menuTypeLabels: { [key: string]: string } = {
   Starters: "=== Starters ===",
@@ -30,19 +29,31 @@ function centerTextIn28Chars(text: string) {
 //option 1
 const billTemplate = (data: IBillMessage) => {
   const fontBoldTitle = "\x1B\x21\x31";
-  const fontBigTitle = "\x1B\x21\x38";
   const fontSmall = "\x1B\x21\x26";
 
   const print = [
     `
-${fontBoldTitle}
-Table: ${data?.table?.number}
-Date: ${new Date().toLocaleDateString()}
-
-${centerTextIn28Chars(`PASS ${data?.table?.pass}`)}
-`,
+    ${fontBoldTitle}
+    Texas Steakour Restaurant` 
   ];
-
+  print.push(`\n`);
+  print.push(`\n`);
+  print.push(`\n`);
+  print.push('116 O Connell Street');
+  print.push(`\n`);
+  print.push(`\n`);
+  print.push('Limerick');
+  print.push(`\n`);
+  print.push(`\n`);
+  print.push('Ireland');
+  print.push(`\n`);
+  print.push(`\n`);
+  print.push(`Table ${data?.table?.number}`);
+  print.push(`\n`);
+  print.push(`\n`);
+  print.push(`Date: ${formatDate(new Date())}`);
+  print.push(`\n`);
+  print.push(`\n`);
   for (const menuType of menuTypes) {
     const ordersByType = data?.orders?.filter(
       (o) => o.mn_section === menuType.type
@@ -56,23 +67,26 @@ ${centerTextIn28Chars(`PASS ${data?.table?.pass}`)}
       for (const order of ordersByType) {
         print.push(`\n`);
         print.push(`\n`);
-        print.push(`${order.quantity}  ${order.menu}`);
+        print.push(`${order.quantity}  ${order.menu} `);
         if (order?.add_ons) {
           // Set a small font size for the description
           print.push(`\n`);
           print.push(`${fontSmall}`);
-          order?.add_ons?.forEach((x) => print.push(` >>${x?.title} ${x.price > 0 && `+${x.price}`}`));
+          order?.add_ons?.forEach((x) => print.push(` >>${x?.title} ${x.price > 0 ? `+${(x?.price / 100).toFixed(2)}` : ''}`));
           // Reset to the original font size
           const fontSizeLarge = "\x1B\x21\x31";
           print.push(`${fontSizeLarge}`);
         }
       }
     }
-    print.push(`\n`);
-    print.push(`${centerTextIn28Chars('-')}`);
-    print.push(`${centerTextIn28Chars(`Total: ${data?.total}`)}`);
-
   }
+
+  print.push(`\n`);
+  print.push(`\n`);
+  print.push(`\n`);
+  print.push(`\n`);
+  print.push(`\n`);
+  print.push(`${centerTextIn28Chars(`Total: ${(data?.total / 100).toFixed(2)}`)}`);
 
   print.push(`
 \n

@@ -1,11 +1,12 @@
 import "express-async-errors";
 
 import printerTemplate from "./utils/orderControllerTemplate";
-import { IOrderController, ITable } from "./interface/restaurant/orders";
+import { IOrder, IOrderController, ITable } from "./interface/restaurant/orders";
 import { Kafka } from "kafkajs";
 import { IPrintGroup, groupOrdersByIP } from "./utils/groupOrdersByIp";
 import { print } from "./utils/print";
-import { IMessageVariables, IOrderMessage, IToMessage } from "./interface/message";
+import { IBillMessage, IMessageVariables, IOrderMessage, IToMessage } from "./interface/message";
+import billTemplate from "./utils/billTemplate";
 
 interface IMessage {
   message: IMessageVariables
@@ -38,47 +39,60 @@ const kafkaRun = async () => {
       try {
         const data = JSON.parse(message?.value as any) as IMessage;
 
-        console.log(data)
-        // if (data?.message?.type === 'order') {
-        //   const message = data?.message as IOrderMessage
-        //   const ordersByIp: IPrintGroup[] = groupOrdersByIP(message?.order_controller?.orders);
-        //   const ipAndTemplate = ordersByIp?.map(group => {
-        //     return {
-        //       ip: group?.ip,
-        //       data: printerTemplate(group?.orders, data?.message?.table, message?.order_controller?.number)
-        //     }
-        //   })
+        if (data?.message?.type === 'order') {
+          const message = data?.message as IOrderMessage
+          const ordersByIp: IPrintGroup[] = groupOrdersByIP(message?.order_controller?.orders);
+          const ipAndTemplate = ordersByIp?.map(group => {
+            return {
+              ip: group?.ip,
+              data: printerTemplate(group?.orders, data?.message?.table, message?.order_controller?.number)
+            }
+          })
 
-        //   for (const item of ipAndTemplate) {
-        //     try {
-        //       await print(item.ip, item.data);
-        //     } catch (error) {
-        //       console.log(
-        //         `=================== Printer ${item?.ip} is offline ===================`
-        //       );
-        //     }
-        //   }
-        // }
+          for (const item of ipAndTemplate) {
+            try {
+              await print(item.ip, item.data);
+            } catch (error) {
+              console.log(
+                `=================== Printer ${item?.ip} is offline ===================`
+              );
+            }
+          }
+        }
 
-        // if (data?.message?.type === 'to') {
-        //   const message = data?.message as IToMessage
+        if (data?.message?.type === 'to') {
+          const message = data?.message as IToMessage
 
-        //   const template = printerTemplate(message?.order_controller?.orders, message?.table, message?.order_controller?.number)
+          const template = printerTemplate(message?.order_controller?.orders, message?.table, message?.order_controller?.number)
 
-        //   try {
-        //     await print(message.ip, template);
-        //   } catch (error) {
-        //     console.log(
-        //       `=================== Printer ${message?.ip} is offline ===================`
-        //     );
-        //   }
-        // }
+          try {
+            await print(message.ip, template);
+          } catch (error) {
+            console.log(
+              `=================== Printer ${message?.ip} is offline ===================`
+            );
+          }
+        }
 
 
-        // if(data?.message?.type ==='bill'){
-        //   const message = data?.message as IToMessage
+        if (data?.message?.type === 'bill') {
 
-        // }
+          const message = data?.message as IBillMessage
+        
+          const template = billTemplate({
+            ...message,
+            total: getOrdersTotal(message?.orders)
+          })
+
+          try {
+            await print(message.ip, template, true);
+          } catch (error) {
+            console.log(
+              `=================== Printer ${message?.ip} is offline ===================`
+            );
+          }
+
+        }
 
 
 
@@ -90,3 +104,14 @@ const kafkaRun = async () => {
 };
 
 kafkaRun();
+
+const getOrdersTotal = (orders: IOrder[]) => {
+  let total = 0
+  orders?.forEach(order => {
+    console.log(order)
+    const addOnsTotal = order?.add_ons?.reduce((acc, curr) => acc + curr.price, 0) || 0
+    total += order?.quantity * (order?.price + addOnsTotal)
+  })
+
+  return total
+}

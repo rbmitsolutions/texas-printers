@@ -1,4 +1,5 @@
 import { IOrder, IOrderController, ITable } from "../interface/restaurant/orders";
+import { getTimeFromDate } from "./convertCentsToEuro";
 
 const menuTypeLabels: { [key: string]: string } = {
   Starters: "=== Starters ===",
@@ -25,26 +26,37 @@ function centerTextIn28Chars(text: string) {
   return centeredText;
 }
 
-//option 1
 const orderControllerTemplate = (orders: IOrder[], table: ITable, orderControllerNumber: number) => {
   const fontBoldTitle = "\x1B\x21\x31";
-  const fontBigTitle = "\x1B\x21\x38";
+  const fontBoldBiggerTitle = "\x1B\x21\x34"
   const fontSmall = "\x1B\x21\x26";
 
   const print = [
     `
 ${fontBoldTitle}
+
+
+Time: ${getTimeFromDate(new Date())},
+
+Guests: ${table?.guests}
+
+${fontBoldBiggerTitle}
 Table: ${table?.number} - ${orderControllerNumber}
-
-${centerTextIn28Chars(`PASS ${table?.pass}`)}
+${fontBoldTitle}
 `,
-  ];
+];
 
-  for (const menuType of menuTypes) {
-    const ordersByType = orders?.filter(
-      (o) => o.mn_section === menuType.type
+print.push(`\n`);
+print.push(`\n`);
+print.push(table?.meal_status)
+print.push(`\n`);
+print.push(`\n`);
+
+for (const menuType of menuTypes) {
+  const ordersByType = orders?.filter(
+    (o) => o.mn_section === menuType.type
     );
-
+    
     if (ordersByType && ordersByType.length) {
       print.push(`\n`);
       print.push(`\n`);
@@ -53,8 +65,9 @@ ${centerTextIn28Chars(`PASS ${table?.pass}`)}
       for (const order of ordersByType) {
         print.push(`\n`);
         print.push(`\n`);
-        print.push(`${fontBigTitle}`);
-        print.push(`${order.quantity}  ${order.menu}`);
+        print.push(`${fontBoldBiggerTitle}`);
+        print.push(`${order.quantity}  ${order.menu_short_title}`);
+        print.push(`${fontBoldTitle}`);
         if (order?.add_ons) {
           // Set a small font size for the description
           print.push(`\n`);
@@ -62,8 +75,7 @@ ${centerTextIn28Chars(`PASS ${table?.pass}`)}
           order?.add_ons?.forEach((x) => print.push(` >>${x?.title}`));
 
           // Reset to the original font size
-          const fontSizeLarge = "\x1B\x21\x31";
-          print.push(`${fontSizeLarge}`);
+          print.push(`${fontBoldTitle}`);
         }
       }
     }
