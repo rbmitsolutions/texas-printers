@@ -26,14 +26,12 @@ export const print = (ip: string, data: string, openTill?: boolean): Promise<voi
 
                 client.write(cutPaperCommand, "utf-8", () => {
                     console.log("Cut");
-                    client.end();
-                    resolve(); // Resolve the promise when the printing is completed
-                    // client.write(openTillCommand, "utf-8", () => {
-                    //     console.log("Till opened");
+                    client.write(openTillCommand, "utf-8", () => {
+                        console.log("Till opened");
 
-                    //     client.end();
-                    //     resolve(); // Resolve the promise when the printing is completed
-                    // });
+                        client.end();
+                        resolve(); // Resolve the promise when the printing is completed
+                    });
                 });
             });
         } else {

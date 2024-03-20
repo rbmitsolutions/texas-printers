@@ -5,8 +5,9 @@ import { IOrder, IOrderController, ITable } from "./interface/restaurant/orders"
 import { Kafka } from "kafkajs";
 import { IPrintGroup, groupOrdersByIP } from "./utils/groupOrdersByIp";
 import { print } from "./utils/print";
-import { IBillMessage, IMessageVariables, IOrderMessage, IToMessage } from "./interface/message";
+import { IBillMessage, IGiftCardMessage, IMessageVariables, IOrderMessage, IToMessage } from "./interface/message";
 import billTemplate from "./utils/billTemplate";
+import giftcardTemplate from "./utils/giftcardTemplate";
 
 interface IMessage {
   message: IMessageVariables
@@ -45,7 +46,7 @@ const kafkaRun = async () => {
           const ipAndTemplate = ordersByIp?.map(group => {
             return {
               ip: group?.ip,
-              data: printerTemplate(group?.orders, data?.message?.table, message?.order_controller?.number)
+              data: printerTemplate(group?.orders, message?.table, message?.order_controller?.number)
             }
           })
 
@@ -76,16 +77,13 @@ const kafkaRun = async () => {
 
 
         if (data?.message?.type === 'bill') {
-
           const message = data?.message as IBillMessage
-        
-          const template = billTemplate({
-            ...message,
-            total: getOrdersTotal(message?.orders)
-          })
 
+          const template = billTemplate(message)
           try {
-            await print(message.ip, template, true);
+            await print(message.ip, template,
+              message?.transaction_method === 'cash' ? true : false
+            );
           } catch (error) {
             console.log(
               `=================== Printer ${message?.ip} is offline ===================`
@@ -94,7 +92,21 @@ const kafkaRun = async () => {
 
         }
 
+        if (data?.message?.type === 'gift-card') {
+          const message = data?.message as IGiftCardMessage
+          const template = giftcardTemplate(message)
 
+          try {
+            await print(message.ip, template,
+              message?.transaction_method === 'cash' ? true : false
+            );
+          } catch (error) {
+            console.log(
+              `=================== Printer ${message?.ip} is offline ===================`
+            );
+          }
+
+        }
 
       } catch (error) {
         console.error("Erro ao analisar JSON:", error);
@@ -104,14 +116,3 @@ const kafkaRun = async () => {
 };
 
 kafkaRun();
-
-const getOrdersTotal = (orders: IOrder[]) => {
-  let total = 0
-  orders?.forEach(order => {
-    console.log(order)
-    const addOnsTotal = order?.add_ons?.reduce((acc, curr) => acc + curr.price, 0) || 0
-    total += order?.quantity * (order?.price + addOnsTotal)
-  })
-
-  return total
-}
