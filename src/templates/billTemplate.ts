@@ -1,33 +1,12 @@
-import { IBillMessage } from "../interface/message";
+import { centerTextIn28Chars, menuTypeLabels, menuTypes } from "./utils";
+
+//interface 
 import { IOrder } from "../interface/restaurant/orders";
-import { formatDate } from "./convertCentsToEuro";
+import { IBillMessage } from "../interface/message";
 
-const menuTypeLabels: { [key: string]: string } = {
-  Starters: "=== Starters ===",
-  "Main Course": "=== Main Course ===",
-  Bar: "=== Bar ===",
-  Sides: "=== Extra Sides ===",
-  Desserts: "=== Desserts ===",
-};
+//utils
+import { formatDate } from "../utils/convert";
 
-const menuTypes = [
-  { type: "Starters", label: "=== Starters ===" },
-  { type: "Main Course", label: "=== Main Course ====" },
-  { type: "Sides", label: "=== Extra Sides ===" },
-  { type: "Bar", label: "=== Bar ===" },
-  { type: "Desserts", label: "=== Desserts ===" },
-];
-
-function centerTextIn28Chars(text: string) {
-  const padding = 28 - text.length;
-  const leftPadding = Math.floor(padding / 2);
-  const rightPadding = Math.ceil(padding / 2);
-  const centeredText =
-    "=".repeat(leftPadding) + " " + text + " " + "=".repeat(rightPadding);
-  return centeredText;
-}
-
-//option 1
 const billTemplate = (data: IBillMessage) => {
   const fontBoldTitle = "\x1B\x21\x31";
   const fontSmall = "\x1B\x21\x26";

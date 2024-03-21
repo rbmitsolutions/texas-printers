@@ -1,19 +1,9 @@
-import { IBillMessage, IGiftCardMessage } from "../interface/message";
-import { formatDate } from "./convertCentsToEuro";
+import { IGiftCardMessage } from "../interface/message";
+import { formatDate } from "../utils/convert";
+import { centerTextIn28Chars } from "./utils";
 
-function centerTextIn28Chars(text: string) {
-    const padding = 28 - text.length;
-    const leftPadding = Math.floor(padding / 2);
-    const rightPadding = Math.ceil(padding / 2);
-    const centeredText =
-        "=".repeat(leftPadding) + " " + text + " " + "=".repeat(rightPadding);
-    return centeredText;
-}
-
-//option 1
 const giftcardTemplate = (data: IGiftCardMessage) => {
     const fontBoldTitle = "\x1B\x21\x31";
-    const fontSmall = "\x1B\x21\x26";
 
     const print = [
         `

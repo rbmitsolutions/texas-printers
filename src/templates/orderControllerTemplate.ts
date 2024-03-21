@@ -1,30 +1,11 @@
-import { IOrder, IOrderController, ITable } from "../interface/restaurant/orders";
-import { getTimeFromDate } from "./convertCentsToEuro";
+//utils
+import { centerTextIn28Chars, menuTypeLabels, menuTypes } from "./utils";
 
-const menuTypeLabels: { [key: string]: string } = {
-  Starters: "=== Starters ===",
-  "Main Course": "=== Main Course ===",
-  Bar: "=== Bar ===",
-  Sides: "=== Extra Sides ===",
-  Desserts: "=== Desserts ===",
-};
+//interface
+import { IOrder, ITable } from "../interface/restaurant/orders";
 
-const menuTypes = [
-  { type: "Starters", label: "=== Starters ===" },
-  { type: "Main Course", label: "=== Main Course ====" },
-  { type: "Sides", label: "=== Extra Sides ===" },
-  { type: "Bar", label: "=== Bar ===" },
-  { type: "Desserts", label: "=== Desserts ===" },
-];
-
-function centerTextIn28Chars(text: string) {
-  const padding = 28 - text.length;
-  const leftPadding = Math.floor(padding / 2);
-  const rightPadding = Math.ceil(padding / 2);
-  const centeredText =
-    "=".repeat(leftPadding) + " " + text + " " + "=".repeat(rightPadding);
-  return centeredText;
-}
+//convert
+import { getTimeFromDate } from "../utils/convert";
 
 const orderControllerTemplate = (orders: IOrder[], table: ITable, orderControllerNumber: number) => {
   const fontBoldTitle = "\x1B\x21\x31";
@@ -44,19 +25,19 @@ ${fontBoldBiggerTitle}
 Table: ${table?.number} - ${orderControllerNumber}
 ${fontBoldTitle}
 `,
-];
+  ];
 
-print.push(`\n`);
-print.push(`\n`);
-print.push(table?.meal_status)
-print.push(`\n`);
-print.push(`\n`);
+  print.push(`\n`);
+  print.push(`\n`);
+  print.push(table?.meal_status)
+  print.push(`\n`);
+  print.push(`\n`);
 
-for (const menuType of menuTypes) {
-  const ordersByType = orders?.filter(
-    (o) => o.mn_section === menuType.type
+  for (const menuType of menuTypes) {
+    const ordersByType = orders?.filter(
+      (o) => o.mn_section === menuType.type
     );
-    
+
     if (ordersByType && ordersByType.length) {
       print.push(`\n`);
       print.push(`\n`);

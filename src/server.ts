@@ -1,14 +1,15 @@
+import { Kafka } from "kafkajs";
 import "express-async-errors";
 
-import printerTemplate from "./utils/orderControllerTemplate";
-import { IOrder, IOrderController, ITable } from "./interface/restaurant/orders";
-import { Kafka } from "kafkajs";
-import { IPrintGroup, groupOrdersByIP } from "./utils/groupOrdersByIp";
-import { print } from "./utils/print";
+//controllers
+import { printGiftCard } from "./controller/giftCard";
+import { printOpenTill } from "./controller/openTill";
+import { printOrder } from "./controller/order";
+import { printBill } from "./controller/bill";
+import { printTo } from "./controller/to";
+
+//interfaces
 import { IBillMessage, IGiftCardMessage, IMessageVariables, IOpenTillMessage, IOrderMessage, IToMessage } from "./interface/message";
-import billTemplate from "./utils/billTemplate";
-import giftcardTemplate from "./utils/giftcardTemplate";
-import { openTill } from "./utils/openTill";
 
 interface IMessage {
   message: IMessageVariables
@@ -42,84 +43,24 @@ const kafkaRun = async () => {
         const data = JSON.parse(message?.value as any) as IMessage;
 
         if (data?.message?.type === 'order') {
-          const message = data?.message as IOrderMessage
-          const ordersByIp: IPrintGroup[] = groupOrdersByIP(message?.order_controller?.orders);
-          const ipAndTemplate = ordersByIp?.map(group => {
-            return {
-              ip: group?.ip,
-              data: printerTemplate(group?.orders, message?.table, message?.order_controller?.number)
-            }
-          })
-
-          for (const item of ipAndTemplate) {
-            try {
-              await print(item.ip, item.data);
-            } catch (error) {
-              console.log(
-                `=================== Printer ${item?.ip} is offline ===================`
-              );
-            }
-          }
+          await printOrder(data?.message as IOrderMessage)
         }
 
         if (data?.message?.type === 'to') {
-          const message = data?.message as IToMessage
-
-          const template = printerTemplate(message?.order_controller?.orders, message?.table, message?.order_controller?.number)
-
-          try {
-            await print(message.ip, template);
-          } catch (error) {
-            console.log(
-              `=================== Printer ${message?.ip} is offline ===================`
-            );
-          }
+          await printTo(data?.message as IToMessage)
         }
 
 
         if (data?.message?.type === 'bill') {
-          const message = data?.message as IBillMessage
-
-          const template = billTemplate(message)
-          try {
-            await print(message.ip, template,
-              message?.transaction_method === 'cash' ? true : false
-            );
-          } catch (error) {
-            console.log(
-              `=================== Printer ${message?.ip} is offline ===================`
-            );
-          }
-
+          await printBill(data?.message as IBillMessage)
         }
 
         if (data?.message?.type === 'gift-card') {
-          const message = data?.message as IGiftCardMessage
-          const template = giftcardTemplate(message)
-
-          try {
-            await print(message.ip, template,
-              message?.transaction_method === 'cash' ? true : false
-            );
-          } catch (error) {
-            console.log(
-              `=================== Printer ${message?.ip} is offline ===================`
-            );
-          }
-
+          await printGiftCard(data?.message as IGiftCardMessage)
         }
 
         if (data?.message?.type === 'open-till') {
-          const message = data?.message as IOpenTillMessage
-
-          try {
-            await openTill(message?.ip);
-          } catch (error) {
-            console.log(
-              `=================== Printer ${message?.ip} is offline ===================`
-            );
-          }
-
+          await printOpenTill(data?.message as IOpenTillMessage)
         }
 
       } catch (error) {
