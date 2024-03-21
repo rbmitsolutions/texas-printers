@@ -1,4 +1,5 @@
 import { IBillMessage } from "../interface/message";
+import { IOrder } from "../interface/restaurant/orders";
 import { formatDate } from "./convertCentsToEuro";
 
 const menuTypeLabels: { [key: string]: string } = {
@@ -67,9 +68,10 @@ const billTemplate = (data: IBillMessage) => {
       for (const order of ordersByType) {
         print.push(`\n`);
         print.push(`\n`);
-        print.push(`${order.quantity}  ${order.menu} `);
+        print.push(`${order.quantity} ${order.menu} ${getOrderItemTotal(order)}`);
         if (order?.add_ons) {
           // Set a small font size for the description
+          print.push(`\n`);
           print.push(`\n`);
           print.push(`${fontSmall}`);
           order?.add_ons?.forEach((x) => print.push(` >>${x?.title} ${x.price > 0 ? `+${(x?.price / 100).toFixed(2)}` : ''}`));
@@ -98,3 +100,11 @@ const billTemplate = (data: IBillMessage) => {
 };
 
 export default billTemplate;
+
+const getOrderItemTotal = (order: IOrder) => {
+  let total = order.price;
+  if (order?.add_ons) {
+    total += order?.add_ons.reduce((acc, curr) => acc + curr.price, 0);
+  }
+  return  (order.quantity * (total / 100) ).toFixed(2);
+}

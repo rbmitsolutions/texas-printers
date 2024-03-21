@@ -5,9 +5,10 @@ import { IOrder, IOrderController, ITable } from "./interface/restaurant/orders"
 import { Kafka } from "kafkajs";
 import { IPrintGroup, groupOrdersByIP } from "./utils/groupOrdersByIp";
 import { print } from "./utils/print";
-import { IBillMessage, IGiftCardMessage, IMessageVariables, IOrderMessage, IToMessage } from "./interface/message";
+import { IBillMessage, IGiftCardMessage, IMessageVariables, IOpenTillMessage, IOrderMessage, IToMessage } from "./interface/message";
 import billTemplate from "./utils/billTemplate";
 import giftcardTemplate from "./utils/giftcardTemplate";
+import { openTill } from "./utils/openTill";
 
 interface IMessage {
   message: IMessageVariables
@@ -100,6 +101,19 @@ const kafkaRun = async () => {
             await print(message.ip, template,
               message?.transaction_method === 'cash' ? true : false
             );
+          } catch (error) {
+            console.log(
+              `=================== Printer ${message?.ip} is offline ===================`
+            );
+          }
+
+        }
+
+        if (data?.message?.type === 'open-till') {
+          const message = data?.message as IOpenTillMessage
+
+          try {
+            await openTill(message?.ip);
           } catch (error) {
             console.log(
               `=================== Printer ${message?.ip} is offline ===================`

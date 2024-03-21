@@ -36,8 +36,14 @@ const giftcardTemplate = (data: IGiftCardMessage) => {
     print.push(`Date: ${formatDate(new Date())}`);
     print.push(`\n`);
     print.push(`\n`);
+    print.push(`${centerTextIn28Chars(` Gift Card `)}`);
+    print.push(`\n`);
+    print.push(`\n`);
+    print.push(`Code: ${data?.code}`);
+    print.push(`\n`);
+    print.push(`\n`);
     print.push(`${centerTextIn28Chars(`Total: ${(data?.total / 100).toFixed(2)}`)}`);
-
+    print.push(fontBoldTitle)
     print.push(`
 \n
 \n
