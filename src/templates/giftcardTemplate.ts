@@ -1,6 +1,9 @@
-import { IGiftCardMessage } from "../interface/message";
-import { formatDate } from "../utils/convert";
+//utils
 import { centerTextIn28Chars } from "./utils";
+import { formatDate } from "../utils/convert";
+
+//interfaces
+import { IGiftCardMessage } from "../interface/message";
 
 const giftcardTemplate = (data: IGiftCardMessage) => {
     const fontBoldTitle = "\x1B\x21\x31";

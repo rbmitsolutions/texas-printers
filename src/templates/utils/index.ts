@@ -1,3 +1,5 @@
+import { IOrder } from "../../interface/restaurant/orders";
+
 export const menuTypeLabels: { [key: string]: string } = {
     Starters: "=== Starters ===",
     "Main Course": "=== Main Course ===",
@@ -22,3 +24,11 @@ export function centerTextIn28Chars(text: string) {
         "=".repeat(leftPadding) + " " + text + " " + "=".repeat(rightPadding);
     return centeredText;
 }
+
+export const getOrderItemTotal = (order: IOrder) => {
+    let total = order.price;
+    if (order?.add_ons) {
+      total += order?.add_ons.reduce((acc, curr) => acc + curr.price, 0);
+    }
+    return  (order.quantity * (total / 100) ).toFixed(2);
+  }

@@ -50,7 +50,6 @@ const kafkaRun = async () => {
           await printTo(data?.message as IToMessage)
         }
 
-
         if (data?.message?.type === 'bill') {
           await printBill(data?.message as IBillMessage)
         }

@@ -1,11 +1,10 @@
-import { centerTextIn28Chars, menuTypeLabels, menuTypes } from "./utils";
+import { centerTextIn28Chars, getOrderItemTotal, menuTypeLabels, menuTypes } from "./utils";
 
 //interface 
-import { IOrder } from "../interface/restaurant/orders";
 import { IBillMessage } from "../interface/message";
 
 //utils
-import { formatDate } from "../utils/convert";
+import { formatDate, priceConverter } from "../utils/convert";
 
 const billTemplate = (data: IBillMessage) => {
   const fontBoldTitle = "\x1B\x21\x31";
@@ -14,7 +13,7 @@ const billTemplate = (data: IBillMessage) => {
   const print = [
     `
     ${fontBoldTitle}
-    Texas Steakour Restaurant` 
+    Texas Steakour Restaurant`
   ];
   print.push(`\n`);
   print.push(`\n`);
@@ -53,7 +52,7 @@ const billTemplate = (data: IBillMessage) => {
           print.push(`\n`);
           print.push(`\n`);
           print.push(`${fontSmall}`);
-          order?.add_ons?.forEach((x) => print.push(` >>${x?.title} ${x.price > 0 ? `+${(x?.price / 100).toFixed(2)}` : ''}`));
+          order?.add_ons?.forEach((x) => print.push(` >>${x?.title} ${priceConverter(x.price)}`))
           // Reset to the original font size
           const fontSizeLarge = "\x1B\x21\x31";
           print.push(`${fontSizeLarge}`);
@@ -80,10 +79,3 @@ const billTemplate = (data: IBillMessage) => {
 
 export default billTemplate;
 
-const getOrderItemTotal = (order: IOrder) => {
-  let total = order.price;
-  if (order?.add_ons) {
-    total += order?.add_ons.reduce((acc, curr) => acc + curr.price, 0);
-  }
-  return  (order.quantity * (total / 100) ).toFixed(2);
-}
