@@ -6,9 +6,12 @@ import orderControllerTemplate from "../templates/orderControllerTemplate";
 
 //interface
 import { IToMessage } from "../interface/message";
+import { organizeOrder } from "../utils/organizeOrder";
 
 export const printTo = async (message: IToMessage) => {
-    const template = orderControllerTemplate(message?.order_controller?.orders, message?.table, message?.order_controller?.number)
+    const orders = organizeOrder(message?.order_controller?.orders)
+    
+    const template = orderControllerTemplate(orders|| [], message?.table, message?.order_controller?.number)
 
     try {
         await print(message.ip, template);

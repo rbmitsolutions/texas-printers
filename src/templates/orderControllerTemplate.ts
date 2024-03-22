@@ -17,20 +17,13 @@ const orderControllerTemplate = (orders: IOrder[], table: ITable, orderControlle
 ${fontBoldTitle}
 
 
-Time: ${getTimeFromDate(new Date())},
 
-Guests: ${table?.guests}
 
 ${fontBoldBiggerTitle}
-Table: ${table?.number} - ${orderControllerNumber}
+T - ${table?.number}   [${table?.guests}]   ${getTimeFromDate(new Date())}
 ${fontBoldTitle}
 `,
   ];
-
-  print.push(`\n`);
-  print.push(`\n`);
-  print.push(table?.meal_status)
-  print.push(`\n`);
   print.push(`\n`);
 
   for (const menuType of menuTypes) {
@@ -43,18 +36,20 @@ ${fontBoldTitle}
       print.push(`\n`);
       print.push(`${fontBoldTitle}`);
       print.push(`${centerTextIn28Chars(menuTypeLabels[menuType.type])}`);
+      print.push(`\n`);
       for (const order of ordersByType) {
-        print.push(`\n`);
         print.push(`\n`);
         print.push(`${fontBoldBiggerTitle}`);
         print.push(`${order.quantity}  ${order.menu_short_title}`);
         print.push(`${fontBoldTitle}`);
-        if (order?.add_ons) {
+        if (order?.add_ons?.length > 0) {
           // Set a small font size for the description
           print.push(`\n`);
           print.push(`${fontSmall}`);
-          order?.add_ons?.forEach((x) => print.push(` >>${x?.title}`));
-
+          order?.add_ons?.forEach((x) => {
+            print.push(` >>${x?.title}`)
+            print.push(`\n`);
+          });
           // Reset to the original font size
           print.push(`${fontBoldTitle}`);
         }
