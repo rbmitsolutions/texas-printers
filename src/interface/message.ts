@@ -2,7 +2,7 @@ import { IOrder, IOrderController, ITable } from "./restaurant/orders"
 
 export type IMessageVariables =
     | ({
-        type: 'order' | 'bill' | 'to' | 'gift-card' | 'open-till'
+        type: 'order' | 'bill' | 'to' | 'gift-card' | 'open-till' | 'gift-card-balance'
         | 0
     } & IMessageDefault)
     | IOrderMessage
@@ -10,7 +10,7 @@ export type IMessageVariables =
     | IToMessage
 
 export interface IMessageDefault {
-    type: 'order' | 'bill' | 'to' | 'gift-card' | 'open-till'
+    type: 'order' | 'bill' | 'to' | 'gift-card' | 'open-till' | 'gift-card-balance'
 }
 
 export interface IOrderMessage {
@@ -46,6 +46,13 @@ export interface IGiftCardMessage {
 export interface IOpenTillMessage {
     type: 'open-till',
     ip: string
+}
+
+export interface IGiftCardBalanceMessage {
+    type: 'gift-card-balance',
+    ip: string
+    code: string
+    balance: number
 }
 
 export enum TransactionsMethod {

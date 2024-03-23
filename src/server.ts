@@ -9,7 +9,8 @@ import { printBill } from "./controller/bill";
 import { printTo } from "./controller/to";
 
 //interfaces
-import { IBillMessage, IGiftCardMessage, IMessageVariables, IOpenTillMessage, IOrderMessage, IToMessage } from "./interface/message";
+import { IBillMessage, IGiftCardBalanceMessage, IGiftCardMessage, IMessageVariables, IOpenTillMessage, IOrderMessage, IToMessage } from "./interface/message";
+import { printGiftCardBalance } from "./controller/giftCardBalance";
 
 interface IMessage {
   message: IMessageVariables
@@ -60,6 +61,10 @@ const kafkaRun = async () => {
 
         if (data?.message?.type === 'open-till') {
           await printOpenTill(data?.message as IOpenTillMessage)
+        }
+
+        if(data?.message?.type === 'gift-card-balance') {
+          await printGiftCardBalance(data?.message as IGiftCardBalanceMessage)
         }
 
       } catch (error) {
