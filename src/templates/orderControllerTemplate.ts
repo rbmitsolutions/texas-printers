@@ -21,6 +21,8 @@ ${fontBoldTitle}
 
 ${fontBoldBiggerTitle}
 T - ${table?.number}   [${table?.guests}]   ${getTimeFromDate(new Date())}
+
+${table?.meal_status === 'all together' ? 'All Together' : ''}
 ${fontBoldTitle}
 `,
   ];
