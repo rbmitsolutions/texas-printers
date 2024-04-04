@@ -1,19 +1,19 @@
 import { IOrder } from "../../interface/restaurant/orders";
 
 export const menuTypeLabels: { [key: string]: string } = {
-    Starters: "=== Starters ===",
-    "Main Course": "=== Main Course ===",
-    Bar: "=== Bar ===",
-    Sides: "=== Extra Sides ===",
-    Desserts: "=== Desserts ===",
+    Starters: "--- STARTERS ---",
+    "Main Course": "--- MAIN COURSE ---",
+    Bar: "--- BAR ---",
+    Sides: "--- EXTRA SIDES ---",
+    Desserts: "--- DESSERTS ---",
 };
 
 export const menuTypes = [
-    { type: "Starters", label: "=== Starters ===" },
-    { type: "Main Course", label: "=== Main Course ====" },
-    { type: "Sides", label: "=== Extra Sides ===" },
-    { type: "Bar", label: "=== Bar ===" },
-    { type: "Desserts", label: "=== Desserts ===" },
+    { type: "Starters", label: "--- STARTERS ---" },
+    { type: "Main Course", label: "--- MAIN COURSE ---=" },
+    { type: "Sides", label: "--- EXTRA SIDES ---" },
+    { type: "Bar", label: "--- BAR ---" },
+    { type: "Desserts", label: "--- DESSERTS ---" },
 ];
 
 export function centerTextIn28Chars(text: string) {
@@ -21,14 +21,14 @@ export function centerTextIn28Chars(text: string) {
     const leftPadding = Math.floor(padding / 2);
     const rightPadding = Math.ceil(padding / 2);
     const centeredText =
-        "=".repeat(leftPadding) + " " + text + " " + "=".repeat(rightPadding);
+        "-".repeat(leftPadding) + " " + text + " " + "-".repeat(rightPadding);
     return centeredText;
 }
 
 export const getOrderItemTotal = (order: IOrder) => {
     let addOnsTotal = 0
     if (order?.add_ons) {
-      addOnsTotal += order?.add_ons.reduce((acc, curr) => acc + curr.price, 0);
+        addOnsTotal += order?.add_ons.reduce((acc, curr) => acc + curr.price, 0);
     }
-    return  (((order.quantity * order.price) + addOnsTotal) / 100).toFixed(2);
-  }
+    return (((order.quantity * order.price) + addOnsTotal) / 100).toFixed(2);
+}

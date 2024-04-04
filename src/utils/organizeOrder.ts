@@ -7,13 +7,13 @@ export const organizeOrder = (orders: IOrder[]): IOrder[] => {
         const menuId = ord?.menu_id;
         // If the menu_id already exists in the combinedOrders, increment the quantity
         if (combinedOrders[menuId]) {
-            const addOns = ord?.add_ons?.filter(addon => addon?.add_ons_id !== "49d10452-d4d0-41c4-8f78-79f0cb46f875" && addon?.add_ons_id !== '58237065-9c2f-4c71-ae5f-7d957cea7a78')
-            
+            const addOns = ord?.add_ons?.filter(addon => addon?.add_ons_id !== "49d10452-d4d0-41c4-8f78-79f0cb46f875")
+
             let oneAddOnTitle: string[] = []
             let addOnsTotal = 0
 
             addOns?.map(addOn => {
-                if(ord?.quantity > 1) {
+                if (ord?.quantity > 1) {
                     oneAddOnTitle?.push(`${ord?.quantity} ${addOn?.title}`)
                     addOnsTotal += (addOn?.price || 0) * ord?.quantity
                 } else {
@@ -24,7 +24,7 @@ export const organizeOrder = (orders: IOrder[]): IOrder[] => {
 
             combinedOrders[menuId].quantity += ord.quantity;
 
-            if(oneAddOnTitle?.length > 0) { 
+            if (oneAddOnTitle?.length > 0) {
                 combinedOrders[menuId].add_ons.push({
                     title: oneAddOnTitle?.join(' - '),
                     add_ons_id: '1',
@@ -66,9 +66,9 @@ export const organizeOrder = (orders: IOrder[]): IOrder[] => {
         }
 
         else {
-            const addOns = ord?.add_ons?.filter(addon => addon?.add_ons_id !== "49d10452-d4d0-41c4-8f78-79f0cb46f875" && addon?.add_ons_id !== '58237065-9c2f-4c71-ae5f-7d957cea7a78')
+            const addOns = ord?.add_ons?.filter(addon => addon?.add_ons_id !== "49d10452-d4d0-41c4-8f78-79f0cb46f875")
 
-            const sides = ord?.add_ons?.filter(addon => addon?.add_ons_id === "49d10452-d4d0-41c4-8f78-79f0cb46f875" || addon?.add_ons_id === '58237065-9c2f-4c71-ae5f-7d957cea7a78')
+            const sides = ord?.add_ons?.filter(addon => addon?.add_ons_id === "49d10452-d4d0-41c4-8f78-79f0cb46f875")
 
             sides?.forEach(side => {
                 const isAdded = combinedOrders[side?.add_ons_opt_id]
@@ -101,7 +101,7 @@ export const organizeOrder = (orders: IOrder[]): IOrder[] => {
             let addOnsTotal = 0
 
             addOns?.map(addOn => {
-                if(ord?.quantity > 1) {
+                if (ord?.quantity > 1) {
                     oneAddOnTitle?.push(`${ord?.quantity} ${addOn?.title}`)
                     addOnsTotal += (addOn?.price || 0) * ord?.quantity
                 } else {
@@ -111,7 +111,7 @@ export const organizeOrder = (orders: IOrder[]): IOrder[] => {
             })
             combinedOrders[menuId as string] = {
                 ...ord,
-                add_ons: oneAddOnTitle?.length > 0 ?[{
+                add_ons: oneAddOnTitle?.length > 0 ? [{
                     title: oneAddOnTitle?.join(' - '),
                     add_ons_id: '1',
                     add_ons_opt_id: '1',

@@ -26,15 +26,12 @@ ${table?.meal_status === 'all together' ? 'All Together' : ''}
 ${fontBoldTitle}
 `,
   ];
-  print.push(`\n`);
-
   for (const menuType of menuTypes) {
     const ordersByType = orders?.filter(
       (o) => o.mn_section === menuType.type
     );
 
     if (ordersByType && ordersByType.length) {
-      print.push(`\n`);
       print.push(`\n`);
       print.push(`${fontBoldTitle}`);
       print.push(`${centerTextIn28Chars(menuTypeLabels[menuType.type])}`);
