@@ -21,6 +21,7 @@ export interface ITable {
   is_open: boolean;
 
   guests: number;
+  guests_booked: number;
 
   booking_id?: string | null;
   client_id?: string | null;

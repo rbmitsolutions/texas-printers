@@ -7,9 +7,10 @@ import { IGiftCardMessage } from "../interface/message";
 
 const giftcardTemplate = (data: IGiftCardMessage) => {
     const fontBoldTitle = "\x1B\x21\x31";
-
+    const lineSpacing = "\x1B\x33\x40"
     const print = [
         `
+        ${lineSpacing}
     ${fontBoldTitle}
     Texas Steakour Restaurant`
     ];
