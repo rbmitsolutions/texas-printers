@@ -44,6 +44,7 @@ ${table?.meal_status === 'all together' ? 'All Together' : ''}
           print.push(`${fontSmall}`);
           order?.add_ons?.forEach((x) => {
             print.push(` >>${x?.title}`)
+            print.push(`\n`);
           });
           print.push(`\n`);
           print.push(`${fontBoldTitle}`);
